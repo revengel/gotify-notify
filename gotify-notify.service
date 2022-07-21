@@ -1,0 +1,11 @@
+[Unit]
+Description=Gotify Notify
+
+[Service]
+Type=simple
+StandardOutput=null
+Restart=on-failure
+ExecStart=%h/.local/bin/gotify-notify
+
+[Install]
+WantedBy=default.target

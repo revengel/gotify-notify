@@ -1,0 +1,8 @@
+---
+gotify:
+  url: wss://example.com
+  token: xxxxxxxx
+  minPriority: 1
+
+log:
+  logLevel: info
