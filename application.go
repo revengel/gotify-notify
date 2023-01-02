@@ -106,13 +106,35 @@ func getAppInfoFromServer(id uint) (app Application, err error) {
 	return app, nil
 }
 
-// getImagePath -
-func getImagePath(id uint, imagePath string) string {
+func getCacheDirPath() string {
 	var cacheDir = os.Getenv("XDG_CACHE_HOME")
 	if cacheDir == "" {
 		cacheDir = filepath.Join(os.Getenv("HOME"), ".cache")
 	}
-	cacheDir = filepath.Join(cacheDir, "gotify-notify", "apps-images")
+	cacheDir = filepath.Join(cacheDir, "gotify-notify")
+	return cacheDir
+}
+
+func getAppImagesDirPath() string {
+	out := getCacheDirPath()
+	return filepath.Join(out, "apps-images")
+}
+
+func createAppImagesDir() error {
+	var dir = getAppImagesDirPath()
+	_, err := os.Stat(dir)
+	switch {
+	case err == nil:
+		return nil
+	case err != nil && !os.IsNotExist(err):
+		return err
+	}
+	return os.MkdirAll(dir, 0777)
+}
+
+// getImagePath -
+func getImagePath(id uint, imagePath string) string {
+	var cacheDir = getAppImagesDirPath()
 	var ext = filepath.Ext(imagePath)
 	var fileName = fmt.Sprintf("app-%d%s", id, ext)
 	return filepath.Join(cacheDir, fileName)
@@ -189,7 +211,7 @@ func saveAppImage(id uint, appImagePath string) (filePath string, err error) {
 		return
 	}
 
-	err = os.MkdirAll(filepath.Dir(filePath), 0644)
+	err = createAppImagesDir()
 	if err != nil {
 		return
 	}
