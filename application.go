@@ -126,7 +126,7 @@ func createAppImagesDir() error {
 	switch {
 	case err == nil:
 		return nil
-	case err != nil && !os.IsNotExist(err):
+	case !os.IsNotExist(err):
 		return err
 	}
 	return os.MkdirAll(dir, 0777)
